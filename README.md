@@ -12,11 +12,45 @@ To find a way to evaluate the magnitude of the potential retiring pool of employ
 - **The objective of Deliverable 2 was to create a table of employees eligible to participate in a mentorship program.**
 
 ## Results
-- 
+- From the output created for Deliverable 1, we see that there are 90,398 employees at retirement age.
+- We also see that the majority (68.8%) of the titles for the employees eligible for retirement contain the word "Senior", "Leader", or "Manager". This demonstrates the urgency in addressing these potential job openings, both from a hiring perspective and from a knowledge retention perspective.
+
+**Unique Job Titles and Employee Counts**
+
+![Retiring Titles](Analysis_Projects_Folder/Pewlett_Hackard_Analysis_Folder/challenge_1_output.png)
+
+- From the output created for Deliverable 2, we see that there are 1,549 employees who are eligible to participate in the mentorship program. 
+- We also see a higher proportion of the mentorship eligible employee pool possess leadership roles when compared to all employees. This is to be expected given their senior status, and extra effort and incentive should be provided to confirm their participation in the program. 
+
+**Employees Eligible for the Mentorship Program**
+![Mentorship Eligibility Table](Analysis_Projects_Folder/Pewlett_Hackard_Analysis_Folder/challenge_2_output.png)
 
 ## Summary
+In summary, we see that there are 90,398 employees born between 1952 and 1955 who are expected to imminently retire from Pewlett Hackard, and that more than 2/3 of those hold some leadership position. That is a very large number, but needs to be understood in the context of the entire employee count for the company. The following query can be run to develop a table summarizing unique employee IDs for current employees that can be used to get the overall count for the company:
+```
+-- Develop table to count all active employees
+SELECT DISTINCT ON (employees.emp_no) employees.emp_no,
+    employees.first_name,
+    employees.last_name,
+    titles.title,
+    titles.from_date,
+    titles.to_date
+INTO all_employees
+FROM employees
+LEFT JOIN titles
+ON employees.emp_no = titles.emp_no
+ORDER BY employees.emp_no, titles.to_date DESC
+```
+Then, the following line of code can be run to find the count of active employees"
+```
+SELECT COUNT (emp_no)
+FROM all_employees
+```
+We find that there are 300,024 active employees at Pewlett Hackard. The cohort of employees likely to retire makes up 30.1% of the company's workforce. Tsunami is an accurate description of this impending wave of retirements, particularly when most of these employees hold a position of leadership in the company. 
 
-
-
-## Summary
-In summary, the removal of the standardized test scores for the Thomas High School 9th graders had a small, but noticeable, impact on the updated school district analysis. In particular, the removal of these scores caused a small decrease in the district's overall average math score, the percent of students passing the math portion of the test, the percent of students passing the reading portion of the test, as well as the percent of students who passed both portions of the test. Interestingly, the removal of the 9th grade scores from Thomas High School – a medium-sized charter school spending $630-$644 per year per student – had no impact on results for the district schools stratified by type, size, or per-student spend. Thomas High School's ranking as the second best school based on overall percent of students passing both the math and reading portions of the test was not changed by the removal of the 9th graders. The analysis demonstrated that 9th graders perform worse overall than 10th-12th graders. The removal of these students from Thomas High School likely inflates their results by eliminating their lowest scores. It would be interesting to compare the schools in the district if all 9th graders were removed to see how that impacts Thomas High School's ranking.
+When we see that there are only 1,549 employees eligible for the mentorship program to fill 90,398 positions it would require that each mentor take on almost SIXTY mentees apiece to fill all the potentially opening positions. This is untenable. One quick solution would be to open up the age eligibility for potential mentors. By performing a very simple refactoring of the Deliverable 2 output code, we can create a larger eligible mentor employee pool. I would propose opening up the program to all employees born between 1960 and 1969. The following is how the relevant snippet of code would look with the updated year range:
+```
+WHERE (de.to_date = '9999-01-01')
+	 AND (e.birth_date BETWEEN '1960-01-01' AND '1969-12-31')
+```
+We find the expanded mentor program would have 93,756 eligible mentors. That value, close to a 1-to-1 ratio to exiting employees, is much more realistic if we want to match employees as mentors and mentees before retirement requires promotion or additional hires. Great investment and incentivization should be placed into the mentor program if it is important to the company to maintain institutional expertise as such a large portion of the workforce retires in the near future.
